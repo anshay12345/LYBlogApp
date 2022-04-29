@@ -13,10 +13,10 @@
           </div>
         {% endif %}
       </div>
-      <h2 class="article-title">{{ object.title }}</h2>
+      <!-- <h2 class="article-title">{{ object.title }}</h2> <span>{{object.category}}<span> -->
       <img class="img-fluid img-thumbnail" src="{{object.post_image.url}}" alt="" style="height:300px;width:300px">
       <p class="article-content">{{ object.content }}</p>
-
+      <span>#{{post.category}}<span>
     </div>
   </article>
 {% endblock content %}

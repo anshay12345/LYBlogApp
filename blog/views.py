@@ -1,3 +1,7 @@
+from dataclasses import fields
+from unicodedata import category
+
+from sqlalchemy import case
 from .forms import UploadForm
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -9,7 +13,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-from .models import Post
+from .models import Post,Category
 
 
 def home(request):
@@ -17,6 +21,12 @@ def home(request):
         'posts': Post.objects.all()
     }
     return render(request, 'blog/home.html', context)
+
+
+def CategoryView(request, cats):
+    category_post = Post.objects.filter(category=cats.replace('-', ' '))
+    return render(request, 'blog/categories.html',{'cats':cats.title().replace('-',' '), 'category_post': category_post})
+
 
 
 class PostListView(ListView):
@@ -51,6 +61,15 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+
+
+class AddCategoryView(LoginRequiredMixin, CreateView):
+    model = Category
+    #form_class = UploadForm
+    fields='__all__'
+    context_object_name = 'cats'
+    template_name = 'blog/addCategory_form.html'
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
